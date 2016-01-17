@@ -1,5 +1,6 @@
 var Botkit = require('botkit')
 var wit = require('node-wit');
+var Witbot = require('witbot')
 
 // Expect a SLACK_TOKEN environment variable
 var slackToken = process.env.SLACK_TOKEN
@@ -25,14 +26,29 @@ bot.startRTM(function (err, bot, payload) {
   }
 })
 
-var witbot = Witbot(witToken);
+var witbot = Witbot(witToken)
 
-controller.hears('.*', 'direct_massage,direct_mention', function(bot, message) {
+controller.hears('.*', 'direct_message,direct_mention', function(bot, message) {
   witbot.process(message.text, bot, message)
 })
 
-witbot.hears('invite', 0.75, function (bot, message, outcome) {
-  bot.reply(message, JSON.stringify(outcome))
+witbot.hears('invite', 0.5, function (bot, message, outcome) {
+  var url = outcome.entities.url[0].value
+  if (url) {
+    var stop = url.indexOf('|')
+    var email = url.substr(stop + 1, url.length - stop - 2)
+    bot.reply(message, 'Okay, I\'ll tell the moderators to invite ' + email)
+    return
+  }
+  bot.reply(message, 'I couldn\'t find an email address to invite.')
+})
+
+witbot.hears('greeting', 0.5, function (bot, message, outcome) {
+  bot.reply(message, 'Greetings!')
+})
+
+witbot.otherwise(function (bot, message) {
+  bot.reply(message, 'You are so intelligent, and I am so simple. I don\'t understnd')
 })
 
 controller.on('bot_channel_join', function (bot, message) {
