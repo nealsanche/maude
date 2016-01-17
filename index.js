@@ -15,6 +15,12 @@ if (!witToken) {
   process.exit(1)
 }
 
+var modChannelId = process.env.MOD_CHANNEL
+if (!modChannelId) {
+  console.error('MOD_CHANNEL is required!')
+  process.exit(1)
+}
+
 var controller = Botkit.slackbot()
 var bot = controller.spawn({
   token: slackToken
@@ -38,6 +44,8 @@ witbot.hears('invite', 0.5, function (bot, message, outcome) {
     var stop = url.indexOf('|')
     var email = url.substr(stop + 1, url.length - stop - 2)
     bot.reply(message, 'Okay, I\'ll tell the moderators to invite ' + email)
+    bot.say({ text: 'A request was made to invite ' + email + ' to our slack.',
+      channel : modChannelId })
     return
   }
   bot.reply(message, 'I couldn\'t find an email address to invite.')
