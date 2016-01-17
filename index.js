@@ -1,9 +1,16 @@
 var Botkit = require('botkit')
+var wit = require('node-wit');
 
 // Expect a SLACK_TOKEN environment variable
 var slackToken = process.env.SLACK_TOKEN
 if (!slackToken) {
   console.error('SLACK_TOKEN is required!')
+  process.exit(1)
+}
+
+var witToken = process.env.WIT_TOKEN
+if (!witToken) {
+  console.error('WIT_TOKEN is required!')
   process.exit(1)
 }
 
@@ -16,6 +23,16 @@ bot.startRTM(function (err, bot, payload) {
   if (err) {
     throw new Error('Could not connect to Slack')
   }
+})
+
+var witbot = Witbot(witToken);
+
+controller.hears('.*', 'direct_massage,direct_mention', function(bot, message) {
+  witbot.process(message.text, bot, message)
+})
+
+witbot.hears('invite', 0.75, function (bot, message, outcome) {
+  bot.reply(message, JSON.stringify(outcome))
 })
 
 controller.on('bot_channel_join', function (bot, message) {
