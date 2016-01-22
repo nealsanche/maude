@@ -34,7 +34,7 @@ bot.startRTM(function (err, bot, payload) {
 
 var witbot = Witbot(witToken)
 
-controller.hears('.*', 'direct_message,direct_mention', function(bot, message) {
+controller.hears('.*', 'direct_message,direct_mention,ambient', function(bot, message) {
   witbot.process(message.text, bot, message)
 })
 
