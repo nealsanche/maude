@@ -52,6 +52,10 @@ witbot.hears('invite', 0.5, function (bot, message, outcome) {
 })
 
 witbot.hears('greeting', 0.5, function (bot, message, outcome) {
+  bot.api.groups.list({}, function(err, list) {
+    console.log(err)
+    console.log(list)
+  })
   bot.reply(message, 'Greetings!')
 })
 
