@@ -11,6 +11,6 @@ config:
     friendly_name: The Moderators channel id
     info: This is important, get it somehow
     default: G0JL9REHZ
-    type: secret
+    type: text
 
 
